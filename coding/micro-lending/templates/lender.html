@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Peer lender | Micro-Lending{% endblock %}
+{% block content %}
+<h2>Pending loan requests</h2>
+{% if loans %}
+<table>
+    <thead><tr><th>Borrower</th><th>Amount</th><th>Tenure</th><th>Risk rating</th><th>Warning</th><th>Decision</th></tr></thead>
+    <tbody>
+    {% for loan in loans %}
+        <tr>
+            <td>{{ loan.username }}</td>
+            <td>{{ "%.2f"|format(loan.requested_amount) }}</td>
+            <td>{{ loan.tenure_months }} months</td>
+            <td>{{ loan.risk_tier or "Not rated" }}</td>
+            <td>{{ loan.warning_message or "None" }}</td>
+            <td>
+                <form method="post" action="{{ url_for('decide_loan', loan_id=loan.id) }}">
+                    <button name="decision" value="approved" type="submit">Approve</button>
+                    <button name="decision" value="rejected" type="submit">Reject</button>
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}<p>There are no pending loan requests.</p>{% endif %}
+{% endblock %}

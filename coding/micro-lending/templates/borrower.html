@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Borrower | Micro-Lending{% endblock %}
+{% block content %}
+<h2>Submit a loan request</h2>
+<form method="post">
+    <p><label>Monthly income <input name="monthly_income" type="number" min="0.01" step="0.01" required value="{{ profile.monthly_income if profile else '' }}"></label></p>
+    <p><label>Monthly debt payments <input name="monthly_debt" type="number" min="0" step="0.01" required value="{{ profile.monthly_debt if profile else '' }}"></label></p>
+    <p><label>On-time repayments <input name="on_time_payments" type="number" min="0" step="1" required value="{{ profile.on_time_payments if profile else '' }}"></label></p>
+    <p><label>Late repayments <input name="late_payments" type="number" min="0" step="1" required value="{{ profile.late_payments if profile else '' }}"></label></p>
+    <p><label>Years in current employment <input name="employment_years" type="number" min="0" step="0.1" required value="{{ profile.employment_years if profile else '' }}"></label></p>
+    <p><label>Requested loan amount <input name="requested_amount" type="number" min="0.01" step="0.01" required></label></p>
+    <p><label>Tenure in months <input name="tenure_months" type="number" min="1" max="360" step="1" required></label></p>
+    <button type="submit">Submit request</button>
+</form>
+
+<h2>Your loan requests</h2>
+{% if loans %}
+<table>
+    <thead><tr><th>Request</th><th>Amount</th><th>Tenure</th><th>Risk</th><th>Status</th><th>Warning</th><th>Schedule</th></tr></thead>
+    <tbody>
+    {% for loan in loans %}
+        <tr>
+            <td>{{ loan.id }}</td><td>{{ "%.2f"|format(loan.requested_amount) }}</td><td>{{ loan.tenure_months }} months</td>
+            <td>{{ loan.risk_tier or "Not rated" }}</td><td>{{ loan.status|capitalize }}</td>
+            <td>{{ loan.warning_message or "None" }}</td>
+            <td>{% if loan.status == 'approved' %}<a href="{{ url_for('borrower_schedule', loan_id=loan.id) }}">View schedule</a>{% else %}Not available{% endif %}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}<p>No loan requests yet.</p>{% endif %}
+{% endblock %}

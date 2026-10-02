@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Register | Micro-Lending{% endblock %}
+{% block content %}
+<h2>Create account</h2>
+<form method="post">
+    <p><label>Username <input name="username" required autocomplete="username"></label></p>
+    <p><label>Password <input name="password" type="password" required minlength="8" autocomplete="new-password"></label></p>
+    <p><label>Account role
+        <select name="role" required>
+            <option value="">Choose a role</option>
+            <option value="borrower">Borrower</option>
+            <option value="lender">Peer lender</option>
+        </select>
+    </label></p>
+    <button type="submit">Register</button>
+</form>
+<p>Already registered? <a href="{{ url_for('login') }}">Log in</a></p>
+{% endblock %}

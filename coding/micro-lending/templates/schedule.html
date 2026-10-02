@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Repayment schedule | Micro-Lending{% endblock %}
+{% block content %}
+<h2>Repayment schedule for loan {{ loan.id }}</h2>
+<p>Loan amount: {{ "%.2f"|format(loan.requested_amount) }} | Status: {{ loan.status|capitalize }}</p>
+{% if schedule %}
+<table>
+    <thead><tr><th>Instalment</th><th>Due date</th><th>EMI amount</th><th>Status</th><th>Action</th></tr></thead>
+    <tbody>
+    {% for item in schedule %}
+        <tr>
+            <td>{{ item.installment_number }}</td><td>{{ item.due_date }}</td><td>{{ "%.2f"|format(item.amount) }}</td><td>{{ item.status|capitalize }}</td>
+            <td>{% if item.status == 'due' %}
+                <form method="post" action="{{ url_for('repay_installment', loan_id=loan.id, installment_id=item.id) }}"><button type="submit">Record repayment</button></form>
+                {% else %}Paid {{ item.paid_at }}{% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}<p>A repayment schedule is available after the loan is approved.</p>{% endif %}
+<p><a href="{{ url_for('borrower_dashboard') }}">Back to borrower home</a></p>
+{% endblock %}
